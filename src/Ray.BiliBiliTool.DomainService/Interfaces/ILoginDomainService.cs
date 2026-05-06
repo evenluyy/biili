@@ -1,4 +1,4 @@
-﻿using Ray.BiliBiliTool.Agent;
+using Ray.BiliBiliTool.Agent;
 
 namespace Ray.BiliBiliTool.DomainService.Interfaces;
 
@@ -33,4 +33,12 @@ public interface ILoginDomainService : IDomainService
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     Task<bool> SaveCookieToQinLongAsync(BiliCookie ckInfo, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// 持久化Cookie到白虎环境变量
+    /// </summary>
+    /// <param name="ckInfo"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task<bool> SaveCookieToBaihuAsync(BiliCookie ckInfo, CancellationToken cancellationToken);
 }
