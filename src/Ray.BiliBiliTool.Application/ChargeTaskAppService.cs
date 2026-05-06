@@ -90,6 +90,13 @@ public class ChargeTaskAppService(
             return;
         }
 
+        //更新cookie到白虎env
+        if (platformType == PlatformType.Baihu)
+        {
+            await loginDomainService.SaveCookieToBaihuAsync(ckInfo, cancellationToken);
+            return;
+        }
+
         //更新cookie到json
         await loginDomainService.SaveCookieToJsonFileAsync(ckInfo, cancellationToken);
     }

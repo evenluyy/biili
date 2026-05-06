@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -9,6 +9,7 @@ using Ray.BiliBiliTool.Agent.BiliBiliAgent.Interfaces;
 using Ray.BiliBiliTool.Agent.BiliBiliAgent.Services;
 using Ray.BiliBiliTool.Agent.HttpClientDelegatingHandlers;
 using Ray.BiliBiliTool.Agent.QingLong;
+using Ray.BiliBiliTool.Agent.Baihu;
 using Ray.BiliBiliTool.Config.Options;
 using Ray.BiliBiliTool.Infrastructure.Cookie;
 
@@ -86,6 +87,27 @@ public static class ServiceCollectionExtension
             .AddHttpApi<IQingLongApi>(o =>
             {
                 o.HttpHost = new Uri(qinglongHost);
+                o.UseDefaultUserAgent = false;
+            })
+            .ConfigureHttpClient(
+                (sp, c) =>
+                {
+                    c.DefaultRequestHeaders.Add(
+                        "User-Agent",
+                        sp.GetRequiredService<
+                            IOptionsMonitor<SecurityOptions>
+                        >().CurrentValue.UserAgent
+                    );
+                }
+            )
+            .AddPolicyHandler(GetRetryPolicy());
+
+        //baihu
+        var baihuHost = configuration["BA_URL"] ?? "http://localhost:8052";
+        services
+            .AddHttpApi<IBaihuApi>(o =>
+            {
+                o.HttpHost = new Uri(baihuHost);
                 o.UseDefaultUserAgent = false;
             })
             .ConfigureHttpClient(
