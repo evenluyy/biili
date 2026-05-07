@@ -105,14 +105,11 @@ public static class ServiceCollectionExtension
         //baihu
         var baihuHost = configuration["BA_URL"] ?? "http://localhost:8052";
         services
-            .AddHttpApi<IBaihuApi>(o =>
-            {
-                o.HttpHost = new Uri(baihuHost);
-                o.UseDefaultUserAgent = false;
-            })
+            .AddRefitClient<IBaihuApi>()
             .ConfigureHttpClient(
                 (sp, c) =>
                 {
+                    c.BaseAddress = new Uri(baihuHost);
                     c.DefaultRequestHeaders.Add(
                         "User-Agent",
                         sp.GetRequiredService<
@@ -121,7 +118,7 @@ public static class ServiceCollectionExtension
                     );
                 }
             )
-            .AddPolicyHandler(GetRetryPolicy());
+            .AddPolicyHandler(BiliResiliencePolicies.ReadOnlyPolicy());
 
         return services;
     }
