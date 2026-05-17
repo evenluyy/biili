@@ -80,8 +80,7 @@ dotnet() {
 # 目录
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # 脚本在 baihu/DefaultTasks/ 下，需向上跳两级到达仓库根目录
-# baihu_bili_repo_dir="$(dirname $(dirname "$CURRENT_DIR"))"
-baihu_bili_repo_dir="$(dirname $(dirname $(dirname "$CURRENT_DIR")))"
+baihu_bili_repo_dir="$(dirname $(dirname "$CURRENT_DIR"))"
 say "bili仓库目录: $baihu_bili_repo_dir"
 
 current_linux_os="debian"  # 或alpine
@@ -429,6 +428,8 @@ run_task() {
     cd $baihu_bili_repo_dir/src/Ray.BiliBiliTool.Console
 
     if [ "$prefer_mode" == "dotnet" ]; then
+        unset version
+        export version=""  
         # 动态创建临时 props 文件以禁用警告，保持仓库根目录整洁
         local props_file="$baihu_bili_repo_dir/Directory.Build.props"
         printf '<Project>\n  <PropertyGroup>\n    <NoWarn>$(NoWarn);NETSDK1188;CS9057;CS8618;CS9042;CS8625;CS8603;CS8602;CS8601;CS8600;CS8604</NoWarn>\n  </PropertyGroup>\n</Project>' > "$props_file"
